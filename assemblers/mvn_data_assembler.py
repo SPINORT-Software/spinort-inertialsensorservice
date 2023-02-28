@@ -14,7 +14,7 @@ SERVICE_BASE_DIR = os.path.dirname(__file__)
 
 
 class MVNDataAssembler:
-    def __init__(self, configuration, confluent_config):
+    def __init__(self, configuration, confluent_config, local_storage):
         self.segment_base_data = self.read_segment_data_file()
         self.kafka_alert = KafkaAlertApi(configuration)
         self.formatted_data = []
@@ -24,19 +24,7 @@ class MVNDataAssembler:
         self.configuration = configuration
         self.confluent_config = confluent_config
         self.allow_sending_key = self.configuration.get_environ_name_data_send_allow()
-
-    def handle(self):
-        """
-        Overrides the handle() method
-        :return:
-        """
-        logger.info("Received request from {}".format(self.client_address[0]))
-        message = self.rfile.readline().strip()
-        logger.info("Datagram received from client is:".format(message))
-        logger.info(message)
-
-    def test(self):
-        return self._should_allow_message_send()
+        self._local_storage = local_storage
 
     def _should_allow_message_send(self):
         """

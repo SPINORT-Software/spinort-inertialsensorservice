@@ -1,6 +1,7 @@
 import os
 from dotenv import load_dotenv
 import logging
+from localStoragePy import localStoragePy
 
 from consumer import Consumer
 from kafka_alert import KafkaAlertApi
@@ -20,6 +21,8 @@ class Service:
         self.kafka_alert = KafkaAlertApi(configuration)
         self.configuration = configuration
         self.confluent_config = confluent_config
+        self.local_storage = localStoragePy(configuration.get_local_storage_workspace_name(),
+                                            configuration.get_local_storage_workspace_backend())
 
     def start_ipc_consumer_thread(self):
         consumer = Consumer(
@@ -30,7 +33,8 @@ class Service:
         consumer.start()
 
     def start_udp_consumer_thread(self):
-        mvn_data_assembler = MVNDataAssembler(self.configuration, self.confluent_config)
+        mvn_data_assembler = MVNDataAssembler(self.configuration, self.confluent_config,
+                                              local_storage=self.local_storage)
         udp_consumer = UDPConsumer(
             mvn_data_assembler=mvn_data_assembler
         )
