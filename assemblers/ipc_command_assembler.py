@@ -1,5 +1,4 @@
 from .kafka_assembler import KafkaAssembler
-from kafka.consumer.fetcher import ConsumerRecord
 from commands import Commands
 
 import os, sys
@@ -19,14 +18,14 @@ class IpcCommandAssembler(KafkaAssembler):
         self._data_send_allow_key = configuration.get_environ_name_data_send_allow()
         self._local_storage = local_storage
 
-    def assemble(self, kafka_consumer_record: ConsumerRecord):
+    def assemble(self, kafka_consumer_record):
         """
         Set the Environment Variables received in the Command from the Smartback Backend engine.
         In the calibration start Command:
         :param kafka_consumer_record:
         :return:
         """
-        original = kafka_consumer_record.value.decode("utf-8")
+        original = kafka_consumer_record.value().decode("utf-8")
         original_event = json.loads(original)
 
         try:
@@ -72,7 +71,7 @@ class IpcCommandAssembler(KafkaAssembler):
                     return False
 
                 logger.info(
-                    f"Setting Calibration Step ID [{calibration_step_id_value}] to Session [{os.getenv(self._session_id_key)}]")
+                    f"Setting Calibration Step ID [{calibration_step_id_value}] to Session [{self._local_storage.getItem(self._session_id_key)}]")
 
                 self._local_storage.setItem(self._step_id_key, calibration_step_id_value)
                 self._local_storage.setItem(self._data_send_allow_key, str(True))

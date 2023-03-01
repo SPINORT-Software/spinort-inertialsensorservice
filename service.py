@@ -3,7 +3,7 @@ from dotenv import load_dotenv
 import logging
 from localStoragePy import localStoragePy
 
-from consumer import Consumer
+from consumer import KafkaConsumer
 from kafka_alert import KafkaAlertApi
 from assemblers.mvn_data_assembler import MVNDataAssembler
 from udp_consumer import UDPConsumer
@@ -25,7 +25,7 @@ class Service:
         self.confluent_config = confluent_config
 
     def start_ipc_consumer_thread(self):
-        consumer = Consumer(
+        consumer = KafkaConsumer(
             self.configuration.get_kafka_consumer_configuration(),
             self.configuration.get_kafka_ipc_topic(),
             callback_function=self.kafka_alert.accept_record

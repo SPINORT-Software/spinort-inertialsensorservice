@@ -14,7 +14,7 @@ class KafkaAlertApi:
 
     def accept_record(self, kafka_consumer_record: ConsumerRecord):
         try:
-            logger.info(f"Processing ConsumerRecord from offset: [{kafka_consumer_record.offset}]")
+            logger.info(f"Processing ConsumerRecord from offset: [{kafka_consumer_record.offset()}]")
             command = self._ipc_command_assembler.assemble(kafka_consumer_record)
         except FilterOutException:
             logger.exception(f"The kafka event is filtered out.")
