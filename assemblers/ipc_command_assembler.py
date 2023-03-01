@@ -49,6 +49,7 @@ class IpcCommandAssembler(KafkaAssembler):
 
                 self._local_storage.setItem(self._session_id_key, session_id_value)
                 self._local_storage.setItem(self._session_type_key, session_type_value)
+                self._local_storage.setItem(self._step_id_key, "")
                 self._local_storage.setItem(self._data_send_allow_key, str(False))
 
             elif command == Commands.calibration_step_start.name:
@@ -90,7 +91,9 @@ class IpcCommandAssembler(KafkaAssembler):
                 self._local_storage.setItem(self._data_send_allow_key, str(False))
 
             elif command == Commands.treatment_start_data_send.name:
+                session_id_value = original_event.get("session")
                 self._local_storage.setItem(self._data_send_allow_key, str(True))
+                # Start a timer for 1 minute upon ending produce to ipc-engine-alerts the command: treatment_one_min_end
 
             elif command == Commands.treatment_one_min_end.name:
                 self._local_storage.setItem(self._data_send_allow_key, str(False))
@@ -102,6 +105,9 @@ class IpcCommandAssembler(KafkaAssembler):
             elif command == Commands.treatment_end.name:
                 self._local_storage.setItem(self._session_id_key, "")
                 self._local_storage.setItem(self._session_type_key, "")
+                self._local_storage.setItem(self._data_send_allow_key, str(False))
+
+            elif command == Commands.calibration_pause.name:
                 self._local_storage.setItem(self._data_send_allow_key, str(False))
 
             else:
