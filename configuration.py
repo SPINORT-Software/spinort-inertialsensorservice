@@ -116,8 +116,8 @@ class _KafkaConsumerConfiguration:
         return _get_kafka_bootstrap_servers(self._environment)
 
     def get_consumer_group_id(self):
-        shuffled_id = f"{(''.join(random.sample(self.group_id_helper, len(self.group_id_helper))))}_{random.randrange(0, 9999999, 2)}"
-        return f"inertialsensor-service-{self._environment}-{shuffled_id}"
+        customer_id = os.getenv("spinort_customer_id", "SPINORT_DEFAULT_ID")
+        return f"inertialsensor-service-{self._environment}-{customer_id}"
 
     def get_consumer_timeout_ms(self):
         return float(os.getenv("KAFKA_CONSUMER_TIMEOUT_MS", "10000"))
