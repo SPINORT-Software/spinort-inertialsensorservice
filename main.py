@@ -24,4 +24,4 @@ if __name__ == '__main__':
     service = Service(configuration, confluent_config)
 
     service.start_ipc_consumer_thread()  # Kafka IPC topic consumer thread
-    # service.start_udp_consumer_thread()  # Kafka UDP Server consumer thread
+    service.start_udp_consumer_thread()  # Kafka UDP Server consumer thread
