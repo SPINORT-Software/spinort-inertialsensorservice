@@ -52,6 +52,8 @@ class IpcCommandAssembler(KafkaAssembler):
                 self._local_storage.setItem(self._step_id_key, "")
                 self._local_storage.setItem(self._data_send_allow_key, str(False))
 
+
+
             elif command == Commands.calibration_step_start.name:
                 """
                 Preprocess: Check if self._session_id_key is not empty. Set the Step ID only if it's not empty.
@@ -94,6 +96,9 @@ class IpcCommandAssembler(KafkaAssembler):
                 session_id_value = original_event.get("session")
                 self._local_storage.setItem(self._data_send_allow_key, str(True))
                 # Start a timer for 1 minute upon ending produce to ipc-engine-alerts the command: treatment_one_min_end
+
+            elif command == Commands.data_send_pause.name:
+                self._local_storage.setItem(self._data_send_allow_key, str(False))
 
             elif command == Commands.treatment_one_min_end.name:
                 self._local_storage.setItem(self._data_send_allow_key, str(False))
